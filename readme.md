@@ -2,6 +2,22 @@
 spring boot starter for gemini protocol
 
 # Getting Started
+
+## generate certificate
+```
+keytool -genkey -alias <alias> -keyalg RSA -keypass <key passphrase> -storepass <store passphrase> -keystore keystore.jks
+```
+
+```yaml
+# application.yaml
+gemini:
+  server:
+    key-password: storepassword
+    keystore-password: storepassword
+    keystore: keystore.jks
+```
+
+
 ```xml
 <dependencies>
   <dependency>
@@ -34,7 +50,3 @@ public class HelloWorldController {
 }
 ```
 
-## generate certificate
-```
-keytool -genkey -alias <alias> -keyalg RSA -keypass <key passphrase> -storepass <store passphrase> -keystore keystore.jks
-```
