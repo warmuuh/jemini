@@ -1,0 +1,5 @@
+gemini:
+  server:
+    key-password: storepassword
+    keystore-password: storepassword
+    keystore: keystore.jks
