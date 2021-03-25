@@ -1,7 +1,10 @@
 package com.github.warmuuh;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.KeyStore;
+import java.util.List;
+import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -16,15 +19,36 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver;
 import wrm.GeminiServerConnectionFactory;
 
 @Configuration
 @AutoConfigureBefore(name = "org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration")
 public class GeminiAutoConfiguration implements WebMvcConfigurer {
 
+
+  @Override
+  public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
+    resolvers.add(new ResponseStatusExceptionResolver(){
+      @Override
+      protected ModelAndView applyStatusAndReason(int statusCode, String reason, HttpServletResponse response)
+          throws IOException {
+        response.sendError(statusCode, reason);
+        return new ModelAndView();
+      }
+    });
+  }
+
+  @Override
+  public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+    resolvers.add(new GeminiInputHandlerMethodArgumentResolver());
+  }
 
   @Override
   public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {

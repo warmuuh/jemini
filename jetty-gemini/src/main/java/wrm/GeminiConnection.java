@@ -88,18 +88,33 @@ public class GeminiConnection extends AbstractConnection implements HttpTranspor
 
   @Override
   public void send(Response info, boolean head, ByteBuffer content, boolean lastContent, Callback callback) {
-    String mediaType = info.getFields().get(HttpHeader.CONTENT_TYPE);
-    if (mediaType == null) {
-      mediaType = "text/gemini; charset=utf-8";
-    }
-    int status = mapFromHttp(info.getStatus());
 
-    writeBlocking(ByteBuffer.wrap((status + " " + mediaType + "\r\n").getBytes()));
-    writeBlocking(content);
+
+    int status = mapFromHttp(info.getStatus());
+    var isSuccess = 20 <= status && status < 30;
+
+    if (isSuccess) {
+      String mediaType = info.getFields().get(HttpHeader.CONTENT_TYPE);
+      if (mediaType == null) {
+        mediaType = "text/gemini; charset=utf-8";
+      }
+      writeBlocking(ByteBuffer.wrap((status + " " + mediaType + "\r\n").getBytes()));
+      if (isSuccess){
+        writeBlocking(content);
+      }
+    } else {
+      String reason = info.getReason() != null ? info.getReason() : "";
+      writeBlocking(ByteBuffer.wrap((status + " " + reason + "\r\n").getBytes()));
+    }
+
     getEndPoint().close();
   }
 
   private int mapFromHttp(int status) {
+    if (status < 100){
+      return status;
+    }
+
     if (status >= 200 && status < 299) {
       return 20;
     }
