@@ -1,4 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.github.warmuuh.GeminiAutoConfiguration,\
-com.github.warmuuh.FreeMarkerConfiguration,\
-com.github.warmuuh.GeminiProperties

@@ -5,14 +5,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.warmuuh</groupId>
-  <artifactId>gemini-protocol</artifactId>
+  <artifactId>jemini-parent</artifactId>
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
   <modules>
-    <module>jetty-gemini</module>
-    <module>gemini-spring-boot-autoconfigure</module>
-    <module>gemini-example</module>
-    <module>gemini-spring-boot-starter</module>
+    <module>jemini</module>
+    <module>jemini-example</module>
+    <module>jemini-spring-boot-autoconfigure</module>
+    <module>jemini-spring-boot-starter</module>
+    <module>jemini-spring</module>
   </modules>
 
   <properties>
