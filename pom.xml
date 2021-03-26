@@ -16,6 +16,15 @@
     <module>jemini-spring</module>
   </modules>
 
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/warmuuh/jemini</url>
+    </repository>
+  </distributionManagement>
+
+
   <properties>
     <spring-boot.version>2.4.2</spring-boot.version>
     <maven.compiler.release>15</maven.compiler.release>
