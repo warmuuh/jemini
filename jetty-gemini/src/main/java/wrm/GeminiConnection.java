@@ -39,6 +39,7 @@ public class GeminiConnection extends AbstractConnection implements HttpTranspor
 
     configuration = new HttpConfiguration();
     configuration.addCustomizer(new SecureRequestCustomizer());
+    configuration.addCustomizer(new SessionIdByClientCertCustomizer());
   }
 
   @Override

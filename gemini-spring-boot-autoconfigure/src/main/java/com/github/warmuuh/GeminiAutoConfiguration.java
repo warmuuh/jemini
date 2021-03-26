@@ -7,11 +7,13 @@ import java.security.cert.CRL;
 import java.util.Collection;
 import java.util.List;
 import javax.net.ssl.TrustManager;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
+import org.eclipse.jetty.server.session.DefaultSessionIdManager;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -90,6 +92,15 @@ public class GeminiAutoConfiguration implements WebMvcConfigurer {
         var sslGeminiConnector = new ServerConnector(server, new SslConnectionFactory(sslContextFactory, "gemini"), new GeminiServerConnectionFactory());
         sslGeminiConnector.setPort(properties.getPort());
         server.setConnectors(new Connector[]{ sslGeminiConnector });
+        server.setSessionIdManager(new DefaultSessionIdManager(server){
+          @Override
+          public String newSessionId(HttpServletRequest request, long created) {
+            if (request.getRequestedSessionId() != null){
+              return request.getRequestedSessionId();
+            }
+            return super.newSessionId(request, created);
+          }
+        });
       }
     });
     return factory;

@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.ServerHttpRequest;
@@ -50,14 +51,13 @@ public class HelloWorldController {
 
   @GetMapping("/cert")
   @ResponseBody
-  public String withClientCertRequest(HttpServletRequest request)
-      throws NoSuchAlgorithmException, CertificateEncodingException {
-    var certs = (X509Certificate[])request.getAttribute("javax.servlet.request.X509Certificate");
-    if (certs == null || certs.length == 0){
-      throw new ResponseStatusException(60, "Client Cert needed", null);
+  public String withClientCertRequest(HttpSession session) {
+    Integer attr = (Integer)session.getAttribute("sessionAttr");
+    if (attr == null){
+      attr = 0;
     }
-    var thumbPrint = Hex.encodeHex(MessageDigest.getInstance("SHA-1").digest(certs[0].getEncoded()));
-    return "Client certified. hash: " + new String(thumbPrint);
+    session.setAttribute("sessionAttr", attr + 1);
+    return "Client certified. \nrequests made: "+ attr+"\nhash (sessionId): " + session.getId();
   }
 
 
