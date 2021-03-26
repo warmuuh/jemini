@@ -1,6 +1,0 @@
-jdk:
-  - openjdk15
-before_install:
-  - sdk install java 15.0.1-open
-  - sdk use java 15.0.1-open
-
