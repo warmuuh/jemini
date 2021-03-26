@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
@@ -95,10 +96,10 @@ public class GeminiAutoConfiguration implements WebMvcConfigurer {
         server.setSessionIdManager(new DefaultSessionIdManager(server){
           @Override
           public String newSessionId(HttpServletRequest request, long created) {
-            if (request.getRequestedSessionId() != null){
-              return request.getRequestedSessionId();
+            if (request.getRequestedSessionId() == null){
+              throw new ResponseStatusException(60, "Client Certificate Needed", null);
             }
-            return super.newSessionId(request, created);
+            return request.getRequestedSessionId();
           }
         });
       }

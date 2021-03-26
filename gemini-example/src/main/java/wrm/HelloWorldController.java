@@ -49,7 +49,7 @@ public class HelloWorldController {
     return "You Wrote: " + userInput;
   }
 
-  @GetMapping("/cert")
+  @GetMapping("/cert2")
   @ResponseBody
   public String withClientCertRequest(HttpSession session) {
     Integer attr = (Integer)session.getAttribute("sessionAttr");
