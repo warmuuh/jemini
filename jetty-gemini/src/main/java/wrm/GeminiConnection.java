@@ -13,6 +13,7 @@ import org.eclipse.jetty.io.RuntimeIOException;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpTransport;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.util.Callback;
 import org.eclipse.jetty.util.SharedBlockingCallback;
 import org.eclipse.jetty.util.log.Log;
@@ -27,6 +28,7 @@ public class GeminiConnection extends AbstractConnection implements HttpTranspor
   private final int bufferSize;
   private final Connector connector;
   private GeminiProtocolParser parser = new GeminiProtocolParser();
+  private HttpConfiguration configuration;
 
   protected GeminiConnection(ByteBufferPool bufferPool, int bufferSize, Connector connector,
       EndPoint endp, Executor executor) {
@@ -34,6 +36,9 @@ public class GeminiConnection extends AbstractConnection implements HttpTranspor
     this.bufferPool = bufferPool;
     this.bufferSize = bufferSize;
     this.connector = connector;
+
+    configuration = new HttpConfiguration();
+    configuration.addCustomizer(new SecureRequestCustomizer());
   }
 
   @Override
@@ -66,7 +71,7 @@ public class GeminiConnection extends AbstractConnection implements HttpTranspor
 //        shutdown(session);
         return -1;
       } else {
-        var adapter = new GeminiHttpChannelAdapter(connector, new HttpConfiguration(), getEndPoint(), this);
+        var adapter = new GeminiHttpChannelAdapter(connector, configuration, getEndPoint(), this);
         parser.handle(buffer, adapter);
         adapter.handle();
       }

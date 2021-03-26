@@ -3,7 +3,10 @@ package com.github.warmuuh;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.KeyStore;
+import java.security.cert.CRL;
+import java.util.Collection;
 import java.util.List;
+import javax.net.ssl.TrustManager;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -67,14 +70,23 @@ public class GeminiAutoConfiguration implements WebMvcConfigurer {
     factory.addServerCustomizers(new JettyServerCustomizer() {
       @Override
       public void customize(Server server) {
-        SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
+        SslContextFactory.Server sslContextFactory = new SslContextFactory.Server(){
+          @Override
+          protected TrustManager[] getTrustManagers(KeyStore trustStore, Collection<? extends CRL> crls)
+              throws Exception {
+            return TRUST_ALL_CERTS;
+          }
+        };
         sslContextFactory.setEndpointIdentificationAlgorithm(null);
         sslContextFactory.setKeyStorePassword(properties.getKeystorePassword());
         sslContextFactory.setKeyManagerPassword(properties.getKeystorePassword());
+        sslContextFactory.setWantClientAuth(true);
+
         if (properties.getKeyAlias() != null){
           sslContextFactory.setCertAlias(properties.getKeyAlias());
         }
         sslContextFactory.setKeyStore(jks);
+
         var sslGeminiConnector = new ServerConnector(server, new SslConnectionFactory(sslContextFactory, "gemini"), new GeminiServerConnectionFactory());
         sslGeminiConnector.setPort(properties.getPort());
         server.setConnectors(new Connector[]{ sslGeminiConnector });
