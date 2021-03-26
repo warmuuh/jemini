@@ -12,7 +12,7 @@
   <artifactId>jemini-spring-boot-starter</artifactId>
 
   <properties>
-    <skipdeployment>true</skipdeployment>
+    <skipdeployment>false</skipdeployment>
   </properties>
 
   <dependencies>
