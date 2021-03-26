@@ -12,8 +12,6 @@
   <artifactId>jemini-spring</artifactId>
 
   <properties>
-    <maven.compiler.target>15</maven.compiler.target>
-    <maven.compiler.source>15</maven.compiler.source>
     <skipdeployment>false</skipdeployment>
   </properties>
 
