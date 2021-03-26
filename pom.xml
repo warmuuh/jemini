@@ -19,7 +19,7 @@
   <properties>
     <spring-boot.version>2.4.2</spring-boot.version>
     <maven.compiler.release>15</maven.compiler.release>
-    <skipdeployment>true</skipdeployment>
+    <skipdeployment>false</skipdeployment>
   </properties>
 
   <build>
