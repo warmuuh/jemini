@@ -1,8 +1,6 @@
 jdk:
   - openjdk15
 before_install:
-  - ./ensure-java-15.sh install
-install:
-  - if ! ./ensure-java-15.sh use; then source ~/.sdkman/bin/sdkman-init.sh; fi
-  - java -version
-  - ./mvnw install
+  - sdk install java 15.0.1-open
+  - sdk use java 15.0.1-open
+
