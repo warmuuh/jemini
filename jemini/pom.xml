@@ -16,6 +16,7 @@
   <properties>
     <maven.compiler.target>15</maven.compiler.target>
     <maven.compiler.source>15</maven.compiler.source>
+    <skipdeployment>true</skipdeployment>
   </properties>
 
   <dependencies>

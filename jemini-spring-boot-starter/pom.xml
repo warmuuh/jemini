@@ -11,6 +11,10 @@
 
   <artifactId>jemini-spring-boot-starter</artifactId>
 
+  <properties>
+    <skipdeployment>true</skipdeployment>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.github.warmuuh.jemini</groupId>
