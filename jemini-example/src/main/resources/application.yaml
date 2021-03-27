@@ -3,3 +3,6 @@ gemini:
     key-password: storepassword
     keystore-password: storepassword
     keystore: keystore.jks
+    dualHttp: true
+
+server.port: 443

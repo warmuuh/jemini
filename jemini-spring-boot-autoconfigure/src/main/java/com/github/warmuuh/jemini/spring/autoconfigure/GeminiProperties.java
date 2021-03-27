@@ -13,4 +13,5 @@ public class GeminiProperties {
   String keystorePassword = "";
   String keyPassword = "";
   String keyAlias = null;
+  boolean dualHttp = false;
 }

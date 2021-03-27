@@ -2,10 +2,8 @@ package com.github.warmuuh.jemini;
 
 import com.github.warmuuh.jemini.GeminiProtocolParser.GeminiParserListener;
 import java.nio.ByteBuffer;
-import org.eclipse.jetty.http.HostPortHttpField;
-import org.eclipse.jetty.http.HttpFields;
-import org.eclipse.jetty.http.HttpVersion;
-import org.eclipse.jetty.http.MetaData;
+
+import org.eclipse.jetty.http.*;
 import org.eclipse.jetty.http.MetaData.Response;
 import org.eclipse.jetty.io.EndPoint;
 import org.eclipse.jetty.server.Connector;
@@ -80,6 +78,8 @@ public class GeminiHttpChannelAdapter extends HttpChannel implements GeminiParse
       uri += "?" + query;
     }
 
-    getRequest().setMetaData(new MetaData.Request("GET", schema, new HostPortHttpField(host, 1965), uri, HttpVersion.HTTP_1_1, new HttpFields(), 0));
+    HttpFields fields = new HttpFields();
+    fields.add(HttpHeader.ACCEPT, "text/gemini");
+    getRequest().setMetaData(new MetaData.Request("GET", schema, new HostPortHttpField(host, 1965), uri, HttpVersion.HTTP_1_1, fields, 0));
   }
 }

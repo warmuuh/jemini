@@ -6,17 +6,18 @@ import java.io.IOException;
 import java.security.KeyStore;
 import java.security.cert.CRL;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import javax.net.ssl.TrustManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.SslConnectionFactory;
+
+import org.eclipse.jetty.http.HttpVersion;
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.session.DefaultSessionIdManager;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.web.embedded.jetty.JettyServerCustomizer;
 import org.springframework.boot.web.embedded.jetty.JettyServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
@@ -61,7 +62,7 @@ public class GeminiAutoConfiguration implements WebMvcConfigurer {
   }
 
   @Bean @Primary
-  public ConfigurableServletWebServerFactory webServerFactory(GeminiProperties properties) throws Exception {
+  public ConfigurableServletWebServerFactory webServerFactory(GeminiProperties properties, ServerProperties httpProps) throws Exception {
     JettyServletWebServerFactory factory = new JettyServletWebServerFactory();
     factory.setPort(properties.getPort());
 
@@ -91,7 +92,17 @@ public class GeminiAutoConfiguration implements WebMvcConfigurer {
 
         var sslGeminiConnector = new ServerConnector(server, new SslConnectionFactory(sslContextFactory, "gemini"), new GeminiServerConnectionFactory());
         sslGeminiConnector.setPort(properties.getPort());
-        server.setConnectors(new Connector[]{ sslGeminiConnector });
+        var connectors = new LinkedList<>();
+        connectors.add(sslGeminiConnector);
+
+        if (properties.isDualHttp()) {
+          var sslHttpConnector = new ServerConnector(server, new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()), new HttpConnectionFactory());
+          sslHttpConnector.setPort(httpProps.getPort());
+          connectors.add(sslHttpConnector);
+        }
+
+
+        server.setConnectors(connectors.toArray(new Connector[0]));
         server.setSessionIdManager(new DefaultSessionIdManager(server){
           @Override
           public String newSessionId(HttpServletRequest request, long created) {
