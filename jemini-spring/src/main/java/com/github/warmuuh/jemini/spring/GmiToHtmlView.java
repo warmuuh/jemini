@@ -1,5 +1,11 @@
 package com.github.warmuuh.jemini.spring;
 
+import com.github.warmuuh.jemini.GmiLexer;
+import com.github.warmuuh.jemini.GmiParser;
+import com.github.warmuuh.jemini.gmi2html.GmiListener;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.springframework.web.servlet.View;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,8 +32,21 @@ public class GmiToHtmlView implements View {
         var res = new StringWriter();
 
         delegate.render(model, request, new CatchBodyResponseWrapper(res));
-        // parse gmi and write html
-        response.getWriter().write(res.toString());
+
+        String renderedResult = res.toString();
+        if (!renderedResult.endsWith("\n")) {
+            renderedResult += "\n";
+        }
+        GmiLexer lexer = new GmiLexer(CharStreams.fromString(renderedResult));
+        GmiParser parser = new GmiParser(new CommonTokenStream(lexer));
+        GmiParser.GmiFileContext gmi = parser.gmiFile();
+
+        ParseTreeWalker walker = new ParseTreeWalker();
+        GmiListener listener = new GmiListener();
+        walker.walk(listener, gmi);
+
+
+        response.getWriter().write(listener.toString());
     }
 
 }

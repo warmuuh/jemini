@@ -14,6 +14,7 @@
     <module>jemini-spring-boot-autoconfigure</module>
     <module>jemini-spring-boot-starter</module>
     <module>jemini-spring</module>
+      <module>jemini-gmi2html</module>
   </modules>
 
   <distributionManagement>
