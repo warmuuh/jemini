@@ -67,7 +67,7 @@ public class GeminiAutoConfiguration implements WebMvcConfigurer {
     factory.setPort(properties.getPort());
 
     var jks = KeyStore.getInstance("JKS");
-    jks.load(new FileInputStream(properties.getKeystore()), properties.getKeystorePassword().toCharArray());
+    jks.load(properties.getKeystore().getInputStream(), properties.getKeystorePassword().toCharArray());
 
 //    factory.addErrorPages(new ErrorPage(HttpStatus.NOT_FOUND, "/notfound.html"));
     factory.addServerCustomizers(new JettyServerCustomizer() {

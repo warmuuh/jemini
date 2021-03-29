@@ -14,7 +14,7 @@ gemini:
   server:
     key-password: storepassword
     keystore-password: storepassword
-    keystore: keystore.jks
+    keystore: file:keystore.jks
 ```
 
 
