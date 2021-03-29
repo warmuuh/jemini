@@ -3,6 +3,8 @@ package com.github.warmuuh.jemini.gmi2html;
 import com.github.warmuuh.jemini.GmiBaseListener;
 import com.github.warmuuh.jemini.GmiParser;
 
+import com.github.warmuuh.jemini.GmiParser.ListBlockContext;
+import com.github.warmuuh.jemini.GmiParser.ListItemContext;
 import java.util.List;
 
 public class GmiListener extends GmiBaseListener {
@@ -63,6 +65,18 @@ public class GmiListener extends GmiBaseListener {
             buffer.append(line.lineContent().getText());
         }
         buffer.append("</pre>\n");
+    }
+
+    @Override
+    public void enterListBlock(ListBlockContext ctx) {
+        buffer.append("<ul>\n");
+        for (ListItemContext listItem : ctx.listItem()) {
+            buffer
+                .append("<li>")
+                .append(listItem.lineContent().getText())
+                .append("</li>\n");
+        }
+        buffer.append("</ul>\n");
     }
 
     @Override

@@ -8,6 +8,7 @@ line : h1 CRLF
     | link CRLF
     | preFormatBlock
     | plainBlock
+    | listBlock
     ;
 
 h1 : '# ' lineContent;
@@ -19,6 +20,9 @@ preFormatBlock: (preFormat CRLF)+;
 preFormat: '``` ' lineContent;
 
 plainBlock: (lineContent CRLF)+;
+
+listBlock: (listItem CRLF)+;
+listItem: '* ' lineContent;
 
 url: WORD;
 lineContent: (WORD WS?)+;
