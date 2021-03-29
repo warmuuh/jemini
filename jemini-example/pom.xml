@@ -12,7 +12,7 @@
 
   <artifactId>jemini-example</artifactId>
   <properties>
-    <java.version>15</java.version>
+    <java.version>11</java.version>
     <skipdeployment>true</skipdeployment>
   </properties>
 

@@ -8,12 +8,10 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 public class ParserTest {
     public static void main(String[] args) {
-        String input = """
-                # test1
-                test1 asdasd asd
-                test2
-                => http://google.de a google link
-                """;
+        String input = "# test1\n"
+            + "test1 asdasd asd\n"
+            + "test2\n"
+            + "=> http://google.de a google link\n";
         GmiLexer lexer = new GmiLexer(CharStreams.fromString(input));
         GmiParser parser = new GmiParser(new CommonTokenStream(lexer));
         GmiParser.GmiFileContext gmi = parser.gmiFile();

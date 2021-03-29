@@ -28,9 +28,9 @@
 
   <properties>
     <spring-boot.version>2.4.2</spring-boot.version>
-    <maven.compiler.release>15</maven.compiler.release>
-    <maven.compiler.target>15</maven.compiler.target>
-    <maven.compiler.source>15</maven.compiler.source>
+    <maven.compiler.release>11</maven.compiler.release>
+    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
     <skipdeployment>false</skipdeployment>
   </properties>
 

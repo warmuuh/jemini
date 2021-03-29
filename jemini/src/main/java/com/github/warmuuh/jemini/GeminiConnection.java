@@ -125,28 +125,42 @@ public class GeminiConnection extends AbstractConnection implements HttpTranspor
       return 20;
     }
     if (status >= 300 && status < 399){
-      return switch (status) {
-        case 302, 307 -> 30;
-        case 301, 308 -> 31;
-        default -> 30;
-      };
+      switch (status) {
+        case 302:
+        case 307:
+          return 30;
+        case 301:
+        case 308:
+          return 31;
+        default:
+          return 30;
+      }
     }
     if (status >= 400 && status < 499) {
-      return switch (status) {
-        case 429 -> 44;
-        case 404 -> 51;
-        case 410 -> 52;
-        case 400 -> 59;
-        default -> 40;
-      };
+      switch (status) {
+        case 429:
+          return 44;
+        case 404:
+          return 51;
+        case 410:
+          return 52;
+        case 400:
+          return 59;
+        default:
+          return 40;
+      }
     }
 
     if (status >= 500 && status < 599) {
-      return switch (status) {
-        case 502, 504 -> 43;
-        case 503 -> 41;
-        default -> 50;
-      };
+      switch (status) {
+        case 502:
+        case 504:
+          return 43;
+        case 503:
+          return 41;
+        default:
+          return 50;
+      }
     }
 
     return 20;

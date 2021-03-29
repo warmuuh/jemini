@@ -13,20 +13,16 @@ public class GmiListener extends GmiBaseListener {
 
     @Override
     public void enterGmiFile(GmiParser.GmiFileContext ctx) {
-        buffer.append("""
-                <html>
-                <head>
-                </head>
-                <body>
-                """);
+        buffer.append("<html>\n"
+            + "<head>\n"
+            + "</head>\n"
+            + "<body>\n");
     }
 
     @Override
     public void exitGmiFile(GmiParser.GmiFileContext ctx) {
-        buffer.append("""
-                </body>
-                </html>
-                """);
+        buffer.append("</body>\n"
+            + "</html>\n");
     }
 
     @Override
