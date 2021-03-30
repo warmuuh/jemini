@@ -16,6 +16,7 @@ import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.session.DefaultSessionIdManager;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.web.embedded.jetty.JettyServerCustomizer;
@@ -38,6 +39,8 @@ import com.github.warmuuh.jemini.GeminiServerConnectionFactory;
 @AutoConfigureBefore(name = "org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration")
 public class GeminiAutoConfiguration implements WebMvcConfigurer {
 
+  @Autowired
+  GeminiProperties properties;
 
   @Override
   public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
@@ -58,11 +61,16 @@ public class GeminiAutoConfiguration implements WebMvcConfigurer {
 
   @Override
   public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-    configurer.defaultContentType(MediaType.parseMediaType("text/gemini; charset=utf-8"));
+    if(properties.isDualHttp()){
+      //gemini:// requests will set ACCEPT-HEADER automatically
+      configurer.defaultContentType(MediaType.parseMediaType("text/html; charset=utf-8"));
+    } else {
+      configurer.defaultContentType(MediaType.parseMediaType("text/gemini; charset=utf-8"));
+    }
   }
 
   @Bean @Primary
-  public ConfigurableServletWebServerFactory webServerFactory(GeminiProperties properties, ServerProperties httpProps) throws Exception {
+  public ConfigurableServletWebServerFactory webServerFactory(ServerProperties httpProps) throws Exception {
     JettyServletWebServerFactory factory = new JettyServletWebServerFactory();
     factory.setPort(properties.getPort());
 
