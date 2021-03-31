@@ -17,4 +17,7 @@ public class GeminiProperties {
   String keyAlias = null;
   boolean dualHttp = false;
   String cssForHttp = null;
+  int httpsPort = 443;
+  boolean redirectToHttps = true;
+  int httpPort = 80;
 }

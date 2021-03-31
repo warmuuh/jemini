@@ -1,5 +1,13 @@
-# gemini spring boot starter
-spring boot starter for gemini protocol
+# jemini
+gemini protocol server on top of jetty.
+
+# Features
+
+* integration with jetty & spring boot
+* supports all the goodies of normal spring boot webapp
+* implicit input handling with `@GmiInput` parameter annotation
+* session-support based on client-certificates
+* dual-protocol: can serve both `gemini://` and `https://` at the same time, translating gemtext to html
 
 # Getting Started
 

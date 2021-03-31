@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.SecuredRedirectHandler;
 import org.eclipse.jetty.server.session.DefaultSessionIdManager;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +72,7 @@ public class GeminiAutoConfiguration implements WebMvcConfigurer {
   }
 
   @Bean @Primary
-  public ConfigurableServletWebServerFactory webServerFactory(ServerProperties httpProps) throws Exception {
+  public ConfigurableServletWebServerFactory webServerFactory() throws Exception {
     JettyServletWebServerFactory factory = new JettyServletWebServerFactory();
     factory.setPort(properties.getPort());
 
@@ -104,11 +106,27 @@ public class GeminiAutoConfiguration implements WebMvcConfigurer {
         connectors.add(sslGeminiConnector);
 
         if (properties.isDualHttp()) {
-          var sslHttpConnector = new ServerConnector(server, new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()), new HttpConnectionFactory());
-          sslHttpConnector.setPort(httpProps.getPort());
-          connectors.add(sslHttpConnector);
-        }
+          HttpConfiguration httpsConf = new HttpConfiguration();
+          httpsConf.addCustomizer(new SecureRequestCustomizer());
 
+          var sslHttpConnector = new ServerConnector(server, new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()), new HttpConnectionFactory(httpsConf));
+          sslHttpConnector.setPort(properties.getHttpsPort());
+          connectors.add(sslHttpConnector);
+
+          if (properties.isRedirectToHttps()){
+            HttpConfiguration config = new HttpConfiguration();
+            config.setSecurePort(properties.getHttpsPort());
+            config.setSecureScheme("https");
+            ServerConnector httpConnector = new ServerConnector(server, new HttpConnectionFactory(config));
+            httpConnector.setPort(properties.getHttpPort());
+            connectors.add(httpConnector);
+
+            HandlerList handlerList = new HandlerList();
+            handlerList.addHandler(new SecuredRedirectHandler());
+            handlerList.addHandler(server.getHandler());
+            server.setHandler(handlerList);
+          }
+        }
 
         server.setConnectors(connectors.toArray(new Connector[0]));
         server.setSessionIdManager(new DefaultSessionIdManager(server){
@@ -120,6 +138,7 @@ public class GeminiAutoConfiguration implements WebMvcConfigurer {
             return request.getRequestedSessionId();
           }
         });
+
       }
     });
     return factory;
