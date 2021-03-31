@@ -4,5 +4,6 @@ gemini:
     keystore-password: storepassword
     keystore: file:keystore.jks
     dualHttp: true
+    css-for-http: /classless-tiny.css
 
 server.port: 443

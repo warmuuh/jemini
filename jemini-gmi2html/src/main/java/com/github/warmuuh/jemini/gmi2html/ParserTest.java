@@ -17,7 +17,7 @@ public class ParserTest {
         GmiParser.GmiFileContext gmi = parser.gmiFile();
 
         ParseTreeWalker walker = new ParseTreeWalker();
-        GmiListener listener = new GmiListener();
+        GmiListener listener = new GmiListener(null);
         walker.walk(listener, gmi);
         System.out.println(listener.toString());
     }

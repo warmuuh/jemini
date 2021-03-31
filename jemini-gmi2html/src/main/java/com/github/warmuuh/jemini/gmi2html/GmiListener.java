@@ -9,13 +9,22 @@ import java.util.List;
 
 public class GmiListener extends GmiBaseListener {
 
+    private final String cssFile;
     StringBuilder buffer = new StringBuilder();
+
+    public GmiListener(String cssFile) {
+        this.cssFile = cssFile;
+    }
 
     @Override
     public void enterGmiFile(GmiParser.GmiFileContext ctx) {
         buffer.append("<html>\n"
-            + "<head>\n"
-            + "</head>\n"
+            + "<head>\n");
+
+        if (cssFile != null){
+            buffer.append("<link rel=\"stylesheet\" href=\""+cssFile+"\">\n");
+        }
+        buffer.append("</head>\n"
             + "<body>\n");
     }
 

@@ -13,14 +13,16 @@ import java.util.Locale;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class GmiToHtmlViewResolver implements ViewResolver {
 
+    private final String cssFile;
     private final AbstractTemplateViewResolver delegate;
 
-    public GmiToHtmlViewResolver(AbstractTemplateViewResolver delegate) {
+    public GmiToHtmlViewResolver(String cssFile, AbstractTemplateViewResolver delegate) {
+        this.cssFile = cssFile;
         this.delegate = delegate;
     }
 
     @Override
     public View resolveViewName(String viewName, Locale locale) throws Exception {
-        return new GmiToHtmlView(delegate.resolveViewName(viewName, locale));
+        return new GmiToHtmlView(cssFile, delegate.resolveViewName(viewName, locale));
     }
 }

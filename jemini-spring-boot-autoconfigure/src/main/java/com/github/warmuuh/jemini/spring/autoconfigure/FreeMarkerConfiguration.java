@@ -13,6 +13,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 @Configuration
+@ConditionalOnProperty(
+    name = {"gemini.server.dualHttp"},
+    matchIfMissing = false
+)
 public class FreeMarkerConfiguration {
 
 //
@@ -24,11 +28,11 @@ public class FreeMarkerConfiguration {
 
   @Bean
   @ConditionalOnProperty(
-          name = {"spring.freemarker.enabled"},
-          matchIfMissing = true
+      name = {"spring.freemarker.enabled"},
+      matchIfMissing = true
   )
-  GmiToHtmlViewResolver freeMarkerHtmlViewResolver(FreeMarkerViewResolver freemarker) {
-    return new GmiToHtmlViewResolver(freemarker);
+  GmiToHtmlViewResolver freeMarkerHtmlViewResolver(GeminiProperties properties, FreeMarkerViewResolver freemarker) {
+    return new GmiToHtmlViewResolver(properties.getCssForHttp(), freemarker);
   }
 
 

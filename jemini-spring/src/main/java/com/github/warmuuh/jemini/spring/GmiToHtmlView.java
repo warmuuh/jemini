@@ -15,9 +15,11 @@ import java.util.Map;
 
 public class GmiToHtmlView implements View {
 
+    private final String cssFile;
     private final View delegate;
 
-    public GmiToHtmlView(View delegate) {
+    public GmiToHtmlView(String cssFile, View delegate) {
+        this.cssFile = cssFile;
         this.delegate = delegate;
     }
 
@@ -42,7 +44,7 @@ public class GmiToHtmlView implements View {
         GmiParser.GmiFileContext gmi = parser.gmiFile();
 
         ParseTreeWalker walker = new ParseTreeWalker();
-        GmiListener listener = new GmiListener();
+        GmiListener listener = new GmiListener(cssFile);
         walker.walk(listener, gmi);
 
 
