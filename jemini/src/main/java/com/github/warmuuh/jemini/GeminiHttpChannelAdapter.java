@@ -68,6 +68,7 @@ public class GeminiHttpChannelAdapter extends HttpChannel implements GeminiParse
 
   @Override
   public void startRequest(String schema, String host, String path, String query) {
+    getRequest().setSecure(true);
     getRequest().setScheme(schema);
     getRequest().setServletPath(path);
     getRequest().setQueryString(query);

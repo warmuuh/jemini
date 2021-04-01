@@ -73,8 +73,9 @@ public class GeminiConnection extends AbstractConnection implements HttpTranspor
         return -1;
       } else {
         var adapter = new GeminiHttpChannelAdapter(connector, configuration, getEndPoint(), this);
-        parser.handle(buffer, adapter);
-        adapter.handle();
+        if (parser.handle(buffer, adapter)){
+          adapter.handle();
+        }
       }
     }
   }
