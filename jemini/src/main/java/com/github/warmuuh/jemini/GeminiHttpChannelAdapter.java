@@ -3,6 +3,7 @@ package com.github.warmuuh.jemini;
 import com.github.warmuuh.jemini.GeminiProtocolParser.GeminiParserListener;
 import java.nio.ByteBuffer;
 
+import org.apache.commons.codec.binary.StringUtils;
 import org.eclipse.jetty.http.*;
 import org.eclipse.jetty.http.MetaData.Response;
 import org.eclipse.jetty.io.EndPoint;
@@ -74,7 +75,7 @@ public class GeminiHttpChannelAdapter extends HttpChannel implements GeminiParse
     getRequest().setQueryString(query);
 //    this.query = query;
 
-    String uri = path;
+    String uri = path.isEmpty() ? "/" : path;
     if (query != null){
       uri += "?" + query;
     }
