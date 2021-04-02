@@ -6,8 +6,13 @@ gemini protocol server on top of jetty.
 * integration with jetty & spring boot
 * supports all the goodies of normal spring boot webapp
 * implicit input handling with `@GmiInput` parameter annotation
-* session-support based on client-certificates
 * dual-protocol: can serve both `gemini://` and `https://` at the same time, translating gemtext to html
+* auto-redirect http to https
+* input handling in both `gemini://` and `https://`, transparent to application
+* client certificates for both  `gemini://` and `https://`
+* session-logic based on client-certificates, both for  `gemini://` and `https://`
+* css-support for html-rendered gemtext
+
 
 # Getting Started
 
@@ -23,6 +28,8 @@ gemini:
     key-password: storepassword
     keystore-password: storepassword
     keystore: file:keystore.jks
+    dualHttp: true
+    css-for-http: /classless-tiny.css
 ```
 
 

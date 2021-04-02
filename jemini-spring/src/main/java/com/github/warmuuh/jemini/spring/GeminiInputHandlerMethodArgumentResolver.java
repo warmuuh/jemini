@@ -28,7 +28,7 @@ public class GeminiInputHandlerMethodArgumentResolver implements HandlerMethodAr
       return queryString;
     }
 
-    if (((ServletWebRequest) webRequest).getRequest().getProtocol().contains("gemini")){
+    if (((ServletWebRequest) webRequest).getRequest().getScheme().contains("gemini")){
       throw new ResponseStatusException(geminiInput.sensitive() ? 11 : 10, geminiInput.value(), null);
     } else {
       HttpServletResponse response = ((ServletWebRequest) webRequest).getResponse();
