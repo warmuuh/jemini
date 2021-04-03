@@ -124,8 +124,17 @@ public class GeminiAutoConfiguration implements WebMvcConfigurer {
             connectors.add(httpConnector);
 
             HandlerList handlerList = new HandlerList();
-            var resourceHandler = new ResourceHandler();
+            var resourceHandler = new ResourceHandler() {
+              @Override
+              public Resource getResource(String path) {
+                var resource = super.getResource(path);
+                var isDirectory = resource != null && resource.isDirectory();
+                return isDirectory ? null : resource;
+              }
+            };
             resourceHandler.setBaseResource(Resource.newClassPathResource("/static-http"));
+            resourceHandler.setDirAllowed(false);
+            resourceHandler.setWelcomeFiles(null);
             handlerList.addHandler(resourceHandler);
             handlerList.addHandler(new SecuredRedirectHandler());
             handlerList.addHandler(server.getHandler());
