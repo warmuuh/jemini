@@ -15,8 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.server.handler.SecuredRedirectHandler;
 import org.eclipse.jetty.server.session.DefaultSessionIdManager;
+import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -122,6 +124,9 @@ public class GeminiAutoConfiguration implements WebMvcConfigurer {
             connectors.add(httpConnector);
 
             HandlerList handlerList = new HandlerList();
+            var resourceHandler = new ResourceHandler();
+            resourceHandler.setBaseResource(Resource.newClassPathResource("/static-http"));
+            handlerList.addHandler(resourceHandler);
             handlerList.addHandler(new SecuredRedirectHandler());
             handlerList.addHandler(server.getHandler());
             server.setHandler(handlerList);
