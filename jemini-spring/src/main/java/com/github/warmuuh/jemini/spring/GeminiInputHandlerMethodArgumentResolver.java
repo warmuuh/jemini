@@ -10,6 +10,10 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 public class GeminiInputHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
   @Override
@@ -25,7 +29,7 @@ public class GeminiInputHandlerMethodArgumentResolver implements HandlerMethodAr
 
     var queryString = ((ServletWebRequest) webRequest).getRequest().getQueryString();
     if (StringUtils.hasLength(queryString)){
-      return queryString;
+      return URLDecoder.decode(queryString, StandardCharsets.UTF_8);
     }
 
     if (((ServletWebRequest) webRequest).getRequest().getScheme().contains("gemini")){
