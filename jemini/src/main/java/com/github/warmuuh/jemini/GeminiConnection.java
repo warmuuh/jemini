@@ -40,6 +40,7 @@ public class GeminiConnection extends AbstractConnection implements HttpTranspor
     configuration = new HttpConfiguration();
     configuration.addCustomizer(new SecureRequestCustomizer());
     configuration.addCustomizer(new SessionIdByClientCertCustomizer());
+    configuration.setRelativeRedirectAllowed(true);
   }
 
   @Override
@@ -99,6 +100,7 @@ public class GeminiConnection extends AbstractConnection implements HttpTranspor
 
     int status = mapFromHttp(info.getStatus());
     var isSuccess = 20 <= status && status < 30;
+    var isRedirect = 30 <= status && status < 40;
 
     if (isSuccess) {
       String mediaType = info.getFields().get(HttpHeader.CONTENT_TYPE);
@@ -109,6 +111,9 @@ public class GeminiConnection extends AbstractConnection implements HttpTranspor
       if (isSuccess){
         writeBlocking(content);
       }
+    } else if (isRedirect){
+      String newLocation = info.getFields().get(HttpHeader.LOCATION);
+      writeBlocking(ByteBuffer.wrap((status + " " + newLocation + "\r\n").getBytes()));
     } else {
       String reason = info.getReason() != null ? info.getReason() : "";
       writeBlocking(ByteBuffer.wrap((status + " " + reason + "\r\n").getBytes()));
