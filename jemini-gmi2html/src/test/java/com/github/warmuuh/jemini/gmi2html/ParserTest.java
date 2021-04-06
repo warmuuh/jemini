@@ -6,13 +6,16 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
+import java.io.IOException;
+
 public class ParserTest {
-    public static void main(String[] args) {
-        String input = "# test1\n"
-            + "test1 asdasd asd\n"
-            + "test2\n"
-            + "=> http://google.de a google link\n";
-        GmiLexer lexer = new GmiLexer(CharStreams.fromString(input));
+    public static void main(String[] args) throws IOException {
+//        String input = "# test1\r\n"
+//            + "test1 asdasd asd\r\n"
+//            + "test2\r\n\r\n"
+//            + "=> http://google.de a google link\r\n";
+
+        GmiLexer lexer = new GmiLexer(CharStreams.fromStream(ParserTest.class.getResourceAsStream("/testinput.txt")));
         GmiParser parser = new GmiParser(new CommonTokenStream(lexer));
         GmiParser.GmiFileContext gmi = parser.gmiFile();
 

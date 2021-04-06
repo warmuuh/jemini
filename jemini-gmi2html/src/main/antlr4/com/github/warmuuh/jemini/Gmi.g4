@@ -1,12 +1,12 @@
 grammar Gmi;
 
 
-gmiFile : line*;
-line : h1 CRLF
+gmiFile : CRLF* line*;
+line : preFormatBlock
+    | h1 CRLF
     | h2 CRLF
     | h3 CRLF
     | link CRLF
-    | preFormatBlock
     | plainBlock
     | listBlock
     ;
@@ -16,8 +16,7 @@ h2 : '## ' lineContent;
 h3 : '### ' lineContent;
 link: '=> ' url (WS lineContent)?;
 
-preFormatBlock: (preFormat CRLF)+;
-preFormat: '``` ' lineContent;
+preFormatBlock: '```' CRLF? (lineContent CRLF)+ '```'  CRLF;
 
 plainBlock: (lineContent CRLF)+;
 

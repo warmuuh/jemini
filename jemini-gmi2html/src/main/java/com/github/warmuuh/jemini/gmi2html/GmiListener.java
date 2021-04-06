@@ -61,13 +61,13 @@ public class GmiListener extends GmiBaseListener {
     @Override
     public void enterPreFormatBlock(GmiParser.PreFormatBlockContext ctx) {
         buffer.append("<pre>");
-        List<GmiParser.PreFormatContext> preLine = ctx.preFormat();
+        List<GmiParser.LineContentContext> preLine = ctx.lineContent();
         for (int i = 0; i < preLine.size(); i++) {
-            GmiParser.PreFormatContext line = preLine.get(i);
+            GmiParser.LineContentContext line = preLine.get(i);
             if (i > 0){
                 buffer.append("\n");
             }
-            buffer.append(line.lineContent().getText());
+            buffer.append(line.getText());
         }
         buffer.append("</pre>\n");
     }
