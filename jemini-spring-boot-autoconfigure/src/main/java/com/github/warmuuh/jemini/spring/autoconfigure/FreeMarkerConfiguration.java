@@ -19,10 +19,6 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 )
 public class FreeMarkerConfiguration {
 
-//
-//  @Autowired
-//  private FreeMarkerProperties properties;
-
   @Autowired(required = false)
   private FreeMarkerViewResolver freeMarkerViewResolver;
 
@@ -40,17 +36,5 @@ public class FreeMarkerConfiguration {
   public void setup(){
     freeMarkerViewResolver.setContentType("text/gemini; charset=UTF-8");
   }
-
-//  @Bean
-//  @ConditionalOnProperty(
-//          name = {"spring.freemarker.enabled"},
-//          matchIfMissing = true
-//  )
-//  FreeMarkerViewResolver freeMarkerGmiViewResolver() {
-//    FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
-//    properties.applyToMvcViewResolver(resolver);
-//    resolver.setContentType("text/gemini; charset=utf-8");
-//    return resolver;
-//  }
 
 }

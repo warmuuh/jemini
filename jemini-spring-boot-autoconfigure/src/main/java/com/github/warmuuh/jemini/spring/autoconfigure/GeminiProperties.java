@@ -20,4 +20,5 @@ public class GeminiProperties {
   int httpsPort = 443;
   boolean redirectToHttps = true;
   int httpPort = 80;
+  String staticHttpDirectory = "/static-http";
 }

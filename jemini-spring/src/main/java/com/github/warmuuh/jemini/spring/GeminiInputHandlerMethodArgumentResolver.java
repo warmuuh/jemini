@@ -1,8 +1,11 @@
 package com.github.warmuuh.jemini.spring;
 
 import javax.servlet.http.HttpServletResponse;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -10,11 +13,15 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+@RequiredArgsConstructor
 public class GeminiInputHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
+
+  private final InputFormProvider inputFormProvider;
 
   @Override
   public boolean supportsParameter(MethodParameter parameter) {
@@ -35,31 +42,17 @@ public class GeminiInputHandlerMethodArgumentResolver implements HandlerMethodAr
     if (((ServletWebRequest) webRequest).getRequest().getScheme().contains("gemini")){
       throw new ResponseStatusException(geminiInput.sensitive() ? 11 : 10, geminiInput.value(), null);
     } else {
-      HttpServletResponse response = ((ServletWebRequest) webRequest).getResponse();
-      response.setStatus(200);
-      String requestURI = ((ServletWebRequest) webRequest).getRequest().getRequestURI();
-      response.getOutputStream().println("<html><head></head><body>"
-          + "<form name=\"input_form\" method=\"get\" action=\""+ requestURI +"\">"
-          + "<label for=\"input\">" + geminiInput.value() + "</label><br>"
-          + "<input type=\"text\" id=\"input\" name=\"\"><br>"
-          + "<input type=\"submit\">"
-          + "</form>"
-          + "<script type=\"text/javascript\">\n"
-          + "window.onload = function() {\n"
-          + "    document.input_form.onsubmit = function(e) {\n"
-          + "        e.preventDefault();\n"
-          + "        var inputValue = document.input_form.elements[0].value;\n"
-          + "        var url = \""+requestURI+"?\" + inputValue;\n"
-          + "        window.location = url;\n"
-          + "        return false;\n"
-          + "    }\n"
-          + "}\n"
-          + "</script>"
-          + "</body></html>");
-      response.getOutputStream().close();
+      renderInputForm((ServletWebRequest) webRequest, geminiInput);
       throw new ResponseStatusException(400, geminiInput.value(), null);
     }
+  }
 
-//    return null;
+  private void renderInputForm(ServletWebRequest webRequest, GeminiInput geminiInput) throws IOException {
+    HttpServletResponse response = webRequest.getResponse();
+    response.setStatus(200);
+    String requestURI = webRequest.getRequest().getRequestURI();
+    var formContent = inputFormProvider.getInputForm(geminiInput.value(), requestURI);
+    formContent.transferTo(response.getOutputStream());
+    response.getOutputStream().close();
   }
 }

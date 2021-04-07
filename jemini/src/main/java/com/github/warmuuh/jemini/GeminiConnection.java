@@ -96,22 +96,18 @@ public class GeminiConnection extends AbstractConnection implements HttpTranspor
 
   @Override
   public void send(Response info, boolean head, ByteBuffer content, boolean lastContent, Callback callback) {
+    GeminiStatus status = GeminiStatusHttpTranslation.mapFromHttp(info.getStatus());
 
-
-    int status = mapFromHttp(info.getStatus());
-    var isSuccess = 20 <= status && status < 30;
-    var isRedirect = 30 <= status && status < 40;
-
-    if (isSuccess) {
+    if (status.is2xSuccess()) {
       String mediaType = info.getFields().get(HttpHeader.CONTENT_TYPE);
       if (mediaType == null) {
         mediaType = "text/gemini; charset=utf-8";
       }
-      writeBlocking(ByteBuffer.wrap((status + " " + mediaType + "\r\n").getBytes()));
-      if (isSuccess){
+      writeBlocking(ByteBuffer.wrap((status.getStatus() + " " + mediaType + "\r\n").getBytes()));
+      if (status.is2xSuccess()){
         writeBlocking(content);
       }
-    } else if (isRedirect){
+    } else if (status.is3xRedirect()){
       String newLocation = info.getFields().get(HttpHeader.LOCATION);
       writeBlocking(ByteBuffer.wrap((status + " " + newLocation + "\r\n").getBytes()));
     } else {
@@ -122,55 +118,6 @@ public class GeminiConnection extends AbstractConnection implements HttpTranspor
     getEndPoint().close();
   }
 
-  private int mapFromHttp(int status) {
-    if (status < 100){
-      return status;
-    }
-
-    if (status >= 200 && status < 299) {
-      return 20;
-    }
-    if (status >= 300 && status < 399){
-      switch (status) {
-        case 302:
-        case 307:
-          return 30;
-        case 301:
-        case 308:
-          return 31;
-        default:
-          return 30;
-      }
-    }
-    if (status >= 400 && status < 499) {
-      switch (status) {
-        case 429:
-          return 44;
-        case 404:
-          return 51;
-        case 410:
-          return 52;
-        case 400:
-          return 59;
-        default:
-          return 40;
-      }
-    }
-
-    if (status >= 500 && status < 599) {
-      switch (status) {
-        case 502:
-        case 504:
-          return 43;
-        case 503:
-          return 41;
-        default:
-          return 50;
-      }
-    }
-
-    return 20;
-  }
 
   private void writeBlocking(ByteBuffer content) {
     var cb = new SharedBlockingCallback();
