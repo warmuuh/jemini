@@ -81,7 +81,7 @@ public class GeminiHttpChannelAdapter extends HttpChannel implements GeminiParse
     }
 
     HttpFields fields = new HttpFields();
-    fields.add(HttpHeader.ACCEPT, "text/gemini");
+    fields.add(HttpHeader.ACCEPT, "text/gemini, */*");
     getRequest().setMetaData(new MetaData.Request("GET", schema, new HostPortHttpField(host, 1965), uri, HttpVersion.HTTP_1_1, fields, 0));
   }
 }
