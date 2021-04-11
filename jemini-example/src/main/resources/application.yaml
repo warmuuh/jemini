@@ -5,3 +5,5 @@ gemini:
     keystore: file:keystore.jks
     dualHttp: true
     css-for-http: /classless-tiny.css
+
+spring.freemarker.suffix: .ftl # disables auto-escaping bc of html content type

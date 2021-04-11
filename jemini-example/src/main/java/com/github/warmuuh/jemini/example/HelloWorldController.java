@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class HelloWorldController {
 
-  @GetMapping("/test")
-  public String test() {
+  @GetMapping("/index")
+  public String index() {
     return "index";
   }
 
-  @GetMapping("/test1")
+  @GetMapping("/responseBody")
   @ResponseBody
-  public String test1() {
+  public String responseBody() {
     return "Hello World. this is a dynamic page: " + Math.random();
   }
 
@@ -38,7 +38,7 @@ public class HelloWorldController {
     return "You Wrote: " + userInput;
   }
 
-  @GetMapping("/cert2")
+  @GetMapping("/cert")
   @ResponseBody
   public String withClientCertRequest(HttpSession session) {
     Integer attr = (Integer)session.getAttribute("sessionAttr");
