@@ -68,7 +68,7 @@ public class NettyRequestExecutor implements RequestExecutor {
           String header = b.readCharSequence(b.readableBytes(), StandardCharsets.UTF_8).toString();
           int splitIdx = header.indexOf(' ');
           String status = header.substring(0, splitIdx);
-          String meta = header.substring(splitIdx + 1);
+          String meta = header.substring(splitIdx + 1).trim();
           sink.success(
               new NettyGeminiResponse(GeminiStatus.tryFromStatus(Integer.parseInt(status)), meta, responses.asFlux()));
         },
