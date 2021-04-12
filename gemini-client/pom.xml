@@ -11,6 +11,7 @@
 
     <artifactId>gemini-client</artifactId>
 
+
     <dependencies>
         <dependency>
             <groupId>io.projectreactor</groupId>

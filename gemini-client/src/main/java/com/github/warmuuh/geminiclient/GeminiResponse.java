@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 public abstract class GeminiResponse {
 	private final GeminiStatus status;
 	private final String meta;
-	private final Flux<ByteBuf> body;
+	protected final Flux<byte[]> body;
 
 
 	public abstract Mono<String> contentAsString();
