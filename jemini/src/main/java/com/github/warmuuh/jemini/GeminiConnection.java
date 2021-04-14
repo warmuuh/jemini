@@ -98,37 +98,39 @@ public class GeminiConnection extends AbstractConnection implements HttpTranspor
   public void send(Response info, boolean head, ByteBuffer content, boolean lastContent, Callback callback) {
     GeminiStatus status = GeminiStatusHttpTranslation.mapFromHttp(info.getStatus());
 
-    if (status.is2xSuccess()) {
-      String mediaType = info.getFields().get(HttpHeader.CONTENT_TYPE);
-      if (mediaType == null) {
-        mediaType = "text/gemini; charset=utf-8";
-      }
-      writeBlocking(ByteBuffer.wrap((status.getStatus() + " " + mediaType + "\r\n").getBytes()));
-      if (status.is2xSuccess()){
-        writeBlocking(content);
-      }
-    } else if (status.is3xRedirect()){
-      String newLocation = info.getFields().get(HttpHeader.LOCATION);
-      writeBlocking(ByteBuffer.wrap((status + " " + newLocation + "\r\n").getBytes()));
-    } else {
-      String reason = info.getReason() != null ? info.getReason() : "";
-      writeBlocking(ByteBuffer.wrap((status + " " + reason + "\r\n").getBytes()));
-    }
+    try{
 
-    getEndPoint().close();
+      if (status.is2xSuccess()) {
+        String mediaType = info.getFields().get(HttpHeader.CONTENT_TYPE);
+        if (mediaType == null) {
+          mediaType = "text/gemini; charset=utf-8";
+        }
+        writeBlocking(ByteBuffer.wrap((status.getStatus() + " " + mediaType + "\r\n").getBytes()));
+        if (status.is2xSuccess()){
+          writeBlocking(content);
+        }
+      } else if (status.is3xRedirect()){
+        String newLocation = info.getFields().get(HttpHeader.LOCATION);
+        writeBlocking(ByteBuffer.wrap((status + " " + newLocation + "\r\n").getBytes()));
+      } else {
+        String reason = info.getReason() != null ? info.getReason() : "";
+        writeBlocking(ByteBuffer.wrap((status + " " + reason + "\r\n").getBytes()));
+      }
+
+      callback.succeeded();
+    } catch (IOException e){
+      callback.failed(e);
+    } finally {
+      getEndPoint().close();
+    }
   }
 
 
-  private void writeBlocking(ByteBuffer content) {
+  private void writeBlocking(ByteBuffer content) throws IOException {
     var cb = new SharedBlockingCallback();
-    try {
       var blocker = cb.acquire();
       getEndPoint().write(blocker, content);
       blocker.block();
-
-    } catch (IOException ioException) {
-      ioException.printStackTrace();
-    }
   }
 
   @Override
