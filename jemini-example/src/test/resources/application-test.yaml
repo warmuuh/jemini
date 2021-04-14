@@ -1,0 +1,4 @@
+gemini:
+  server:
+    http-port: 8080
+    https-port: 8433
