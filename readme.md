@@ -37,8 +37,8 @@ gemini:
 <!-- setup github repository as maven repo. see https://docs.github.com/en/packages/guides/configuring-apache-maven-for-use-with-github-packages -->
 <dependencies>
   <dependency>
-   <groupId>com.github.warmuuh</groupId>
-   <artifactId>gemini-spring-boot-starter</artifactId>
+   <groupId>com.github.warmuuh.jemini</groupId>
+   <artifactId>jemini-spring-boot-starter</artifactId>
    <version>1.0-SNAPSHOT</version>
   </dependency>
   <dependency>
