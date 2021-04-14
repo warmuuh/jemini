@@ -29,13 +29,18 @@ public class HelloWorldController {
 
   @GetMapping("/status")
   public ResponseEntity<String> withCustomStatus(){
-   return ResponseEntity.status(10).body("input");
+   return ResponseEntity.status(10).build();
   }
 
   @GetMapping("/input")
   @ResponseBody
   public String withInput(@GeminiInput(value = "testValue", sensitive = true) String userInput){
     return "You Wrote: " + userInput;
+  }
+
+  @GetMapping("/redirect")
+  public String redirect(){
+    return "redirect:/index";
   }
 
   @GetMapping("/cert")

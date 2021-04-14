@@ -5,6 +5,8 @@ import com.github.warmuuh.geminiclient.GeminiStatus;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.CompositeByteBuf;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -21,14 +23,31 @@ public class NettyGeminiResponse extends GeminiResponse {
 	}
 
 	@Override
+	public Mono<byte[]> contentAsBytes() {
+		return body.collectList().map(list -> list.stream()
+					.collect(
+							() -> new ByteArrayOutputStream(),
+							(b, e) -> {
+								try {
+									b.write(e);
+								} catch (IOException e1) {
+									throw new RuntimeException(e1);
+								}
+							},
+							(a, b) -> {}).toByteArray());
+	}
+
+	@Override
 	public Mono<String> contentAsString() {
-		return body
-				.map(buf -> new String(buf, StandardCharsets.UTF_8))
-				.collect(Collectors.joining());
+		return contentAsBytes().map(buf -> new String(buf, StandardCharsets.UTF_8));
+//				.map(buf -> new String(buf, StandardCharsets.UTF_8))
+//				.collect(Collectors.joining());
 //				.collectList()
 //				.map((List<ByteBuf> bufs) -> convertToString(bufs));
 //		return nettyBody.asString().collect(Collectors.joining());
 	}
+
+
 //
 //	public String convertToString(List<ByteBuf> bufs){
 //		bufs.stream().map(buf -> buf.)

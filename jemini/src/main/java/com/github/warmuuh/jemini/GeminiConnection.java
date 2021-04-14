@@ -111,10 +111,10 @@ public class GeminiConnection extends AbstractConnection implements HttpTranspor
         }
       } else if (status.is3xRedirect()){
         String newLocation = info.getFields().get(HttpHeader.LOCATION);
-        writeBlocking(ByteBuffer.wrap((status + " " + newLocation + "\r\n").getBytes()));
+        writeBlocking(ByteBuffer.wrap((status.getStatus() + " " + newLocation + "\r\n").getBytes()));
       } else {
         String reason = info.getReason() != null ? info.getReason() : "";
-        writeBlocking(ByteBuffer.wrap((status + " " + reason + "\r\n").getBytes()));
+        writeBlocking(ByteBuffer.wrap((status.getStatus() + " " + reason + "\r\n").getBytes()));
       }
 
       callback.succeeded();

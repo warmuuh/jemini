@@ -13,5 +13,6 @@ public abstract class GeminiResponse {
 	protected final Flux<byte[]> body;
 
 
+	public abstract Mono<byte[]> contentAsBytes();
 	public abstract Mono<String> contentAsString();
 }

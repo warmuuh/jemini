@@ -5,11 +5,12 @@ import com.github.warmuuh.geminiclient.GeminiResponse;
 import com.github.warmuuh.geminiclient.GeminiStatus;
 import com.github.warmuuh.geminiclient.RequestExecutor;
 import io.netty.channel.ChannelOption;
-import io.netty.handler.logging.LogLevel;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyStore;
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,7 +22,6 @@ import reactor.netty.NettyInbound;
 import reactor.netty.NettyOutbound;
 import reactor.netty.tcp.SslProvider;
 import reactor.netty.tcp.TcpClient;
-import reactor.netty.transport.logging.AdvancedByteBufFormat;
 
 public class NettyRequestExecutor implements RequestExecutor {
 
@@ -29,7 +29,7 @@ public class NettyRequestExecutor implements RequestExecutor {
   public static final byte[] CRLF = "\r\n".getBytes();
 
   @Override
-  public Mono<GeminiResponse> execute(URI baseUri, GeminiRequest request) {
+  public Mono<GeminiResponse> execute(URI baseUri, GeminiRequest request, KeyManagerFactory keyManagerFactory) {
 
     var requestedUri = baseUri.resolve(request.getPath());
 
@@ -41,7 +41,10 @@ public class NettyRequestExecutor implements RequestExecutor {
             .port(baseUri.getPort() == -1 ? 1965 : baseUri.getPort())
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
             .secure(SslProvider.builder()
-                .sslContext(SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build())
+                .sslContext(SslContextBuilder.forClient()
+                    .keyManager(keyManagerFactory)
+                    .trustManager(InsecureTrustManagerFactory.INSTANCE)
+                    .build())
                 .build())
 //            .wiretap("reactor.netty.tcp.TcpClient", LogLevel.DEBUG, AdvancedByteBufFormat.TEXTUAL,
 //                StandardCharsets.UTF_8)
