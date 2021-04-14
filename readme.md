@@ -34,6 +34,7 @@ gemini:
 
 
 ```xml
+<!-- setup github repository as maven repo. see https://docs.github.com/en/packages/guides/configuring-apache-maven-for-use-with-github-packages -->
 <dependencies>
   <dependency>
    <groupId>com.github.warmuuh</groupId>
