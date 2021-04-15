@@ -54,6 +54,12 @@ class GeminiProtocolIT {
   }
 
   @Test
+  void shouldHandleNotFound(){
+    var response = client.get("/unknown").block();
+    assertThat(response.getStatus()).isEqualTo(GeminiStatus.NOT_FOUND);
+  }
+
+  @Test
   void shouldAcceptInputIfGiven(){
     var response = client.get("/input?blub").block();
     assertThat(response.getStatus()).isEqualTo(GeminiStatus.SUCCESS);
