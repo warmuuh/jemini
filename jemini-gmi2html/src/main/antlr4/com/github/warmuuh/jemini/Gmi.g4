@@ -1,7 +1,7 @@
 grammar Gmi;
 
 
-gmiFile : CRLF* line*;
+gmiFile : CRLF* (WS* line)*;
 line : preFormatBlock
     | h1 CRLF
     | h2 CRLF
